@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-page">
+    <div class="background-glow"></div>
+    <header class="topbar">
+        <h1>DevOps Notes</h1>
+    </header>
+
+    <main class="dashboard-grid">
+        {% if labs %}
+            {% for lab in labs %}
+                <a class="lab-card" href="{{ url_for('lab_detail', lab_id=lab.id) }}">
+                    <div class="chip">Lab {{ lab.id }}</div>
+                    <h2>{{ lab.title }}</h2>
+                    <p>{{ lab.preview }}</p>
+                    <span class="file-label">{{ lab.file_name }}</span>
+                </a>
+            {% endfor %}
+        {% else %}
+            <section class="empty-state">
+                <h2>No markdown files found</h2>
+                <p>Add files in the <code>lab/</code> folder to see them here.</p>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>
