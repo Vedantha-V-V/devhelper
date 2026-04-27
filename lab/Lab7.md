@@ -1,54 +1,48 @@
-# Lab Template: Docker to Kubernetes Workflow
+# Lab 7: Docker Networking
 
-Use this template for new labs. Each step has two required parts:
-- Dashboard Task: UI actions on any web dashboard or portal.
-- Commands: terminal commands to execute.
-
-## Step 1: [Name Your Step]
-### Dashboard Task
-1. Open [dashboard-url-here].
-2. Navigate to [page-name].
-3. Confirm [thing-you-should-see].
+## Step 1: Create two Ubuntu container on the Default Bridge
+### Dashboard Tasks
 
 ### Commands
 ```bash
-# Add commands to run for Step 1
+docker network ls
+
+apt-get install bridge-utils
+brctl show
+
+docker run -dt ubuntu bash
+docker inspect [network_id]
 ```
 
-## Step 2: [Build or Pull Image]
-### Dashboard Task
-1. Open Docker Desktop or Docker Hub.
-2. Verify repository [repo-name] exists.
+## Step 2: Ping Container 2 from Container 1
+### Dashboard Tasks
 
 ### Commands
 ```bash
-docker login
-docker build -t <dockerhub-username>/<app-name>:v1 .
-docker push <dockerhub-username>/<app-name>:v1
+docker exec -it 3bf108d1
+apt-get install iputils-ping
+ping google.com
+
+ping 172.17.0.3
 ```
 
-## Step 3: [Deploy to Kubernetes]
-### Dashboard Task
-1. Open your Kubernetes dashboard.
-2. Select the target namespace.
-3. Watch workload and service health.
+## Step 3: Create Custom Bridge
+### Dashboard Tasks
 
 ### Commands
 ```bash
-kubectl create deployment <app-name> --image=<dockerhub-username>/<app-name>:v1
-kubectl expose deployment <app-name> --type=LoadBalancer --port=80 --target-port=80
-kubectl get pods
-kubectl get svc
+docker network create custom_bridge
+docker run -dt --network custom_bridge ubuntu bash
+docker run -dt --network custom_bridge ubuntu bash
+docker inspect 291da8a0175a
 ```
 
-## Step 4: [Validation and Cleanup]
-### Dashboard Task
-1. Verify the app is reachable from browser/API client.
-2. Capture screenshots or notes in your dashboard.
+## Step 4: Connecting container in default bridge to custom bridge
+### Dashboard Tasks
 
 ### Commands
 ```bash
-kubectl logs deployment/<app-name>
-kubectl delete service <app-name>
-kubectl delete deployment <app-name>
+docker network connect custom_bridge 3bf108d121161096
+docker inspect custom_bridge
+docker network disconnect custom_bridge 3bf108d121161096
 ```

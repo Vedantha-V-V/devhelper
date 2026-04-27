@@ -1,6 +1,7 @@
 # Lab 3: Push Image to Docker Hub
 
 ## Step 1: Creating python server
+### Dashboard Tasks
 
 ### Commands
 ```bash
@@ -28,6 +29,8 @@ python3 app.py
 ```
 
 ## Step 2: Creating docker image
+### Dashboard Tasks
+1. Check port 8080
 
 ### Commands
 ```bash
@@ -44,16 +47,11 @@ RUN pip install flask
 
 CMD ["python3","app.py"]
 
-# Docker build
 sudo docker build -t pyimage:1 .
 
-# List all docker images
 sudo docker images
 
-# Docker run
 sudo docker run -p 8000:5000 pyimage:1
-
-# Check port 8080
 ```
 
 # Step 3: Push image to docker hub
@@ -63,14 +61,11 @@ sudo docker run -p 8000:5000 pyimage:1
 
 ### Commands
 ```bash
-# Rename docker image
 sudo docker image
 sudo docker tag pyimage:1 vedanthavv/dockerimage
 
-# Login
 sudo docker login -u vedanthavv
 sudo docker push vedanthavv/pyimage
 
-# Logout
 docker logout
 ```

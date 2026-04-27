@@ -1,73 +1,56 @@
 # Lab 5: Prometheus and Grafana
 
-## Step 1: Prepare Project Workspace
-### Dashboard Task
-1. Open your code editor and create a new folder named flask-container-lab.
-2. Create files named main.py, requirements.txt, and Dockerfile.
-3. Keep your Docker Desktop dashboard open to monitor images and containers.
+## Step 1: Create Prometheus File
+### Dashboard Tasks
 
 ### Commands
 ```bash
-mkdir flask-container-lab
-cd flask-container-lab
+cd Documents
+mkdir monitoring
+cd monitoring
+nano prometheus.yml
+
+global:
+    scrape_interval: 15s
+
+scrape_configs:
+ - job_name: "prometheus"
+   static_configs:
+    - targets: ["localhost:9090"]
 ```
 
-## Step 2: Create Flask App and Dependencies
-### Dashboard Task
-1. Add a minimal Flask app in main.py.
-2. Add flask in requirements.txt.
-3. Verify file list in editor side panel.
+## Step 2: Create Docker Compose File
+### Dashboard Tasks
 
 ### Commands
 ```bash
-cat > main.py << 'EOF'
-from flask import Flask
+nano docker-compose.yml
 
-app = Flask(__name__)
+version: '3';
 
-@app.route('/')
-def health():
-    return {'status': 'ok', 'service': 'flask-container-lab'}
+services:
+ prometheus:
+  image: prom/prometheus
+  container_name: prometheus
+  volumes:
+  -./prometheus.yml:/etc/prometheus/prometheus.yml
+ports:
+- "9090:9090"
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-EOF
-
-cat > requirements.txt << 'EOF'
-flask==3.1.0
-EOF
+ grafana:
+  image: grafana/grafana
+  container_name: grafana
+  ports:
+   - "3000:3000"
 ```
 
-## Step 3: Build and Run Docker Image
-### Dashboard Task
-1. In Docker Desktop, confirm new image appears after build.
-2. Open container details and verify port mapping 5000.
+## Step 3: Start Containers
+### Dashboard Tasks
+1. Open http://localhost:9090
+2. Open http://localhost:3000
 
 ### Commands
 ```bash
-cat > Dockerfile << 'EOF'
-FROM python:3.12-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-EXPOSE 5000
-CMD ["python", "main.py"]
-EOF
-
-docker build -t <dockerhub-username>/flask-container-lab:v1 .
-docker run --name flask-lab -d -p 5000:5000 <dockerhub-username>/flask-container-lab:v1
-docker ps
-curl http://localhost:5000/
-```
-
-## Step 4: Push to Docker Hub
-### Dashboard Task
-1. Open Docker Hub and create repository flask-container-lab if needed.
-2. Confirm the v1 tag appears in repository tags.
-
-### Commands
-```bash
-docker login
-docker push <dockerhub-username>/flask-container-lab:v1
+sudo docker compose up -d
+sudo docker compose down
 ```

@@ -1,54 +1,108 @@
-# Lab Template: Docker to Kubernetes Workflow
+# Lab 6: Ansible and Terraform
 
-Use this template for new labs. Each step has two required parts:
-- Dashboard Task: UI actions on any web dashboard or portal.
-- Commands: terminal commands to execute.
-
-## Step 1: [Name Your Step]
-### Dashboard Task
-1. Open [dashboard-url-here].
-2. Navigate to [page-name].
-3. Confirm [thing-you-should-see].
+## Step 1: Terraform and Ansible Installation
+### Dashboard Tasks
 
 ### Commands
 ```bash
-# Add commands to run for Step 1
+sudo apt update
+
+sudo snap install terraform --classic
+sudo apt install ansible -y
+
+terraform --version
+ansible --version
 ```
 
-## Step 2: [Build or Pull Image]
-### Dashboard Task
-1. Open Docker Desktop or Docker Hub.
-2. Verify repository [repo-name] exists.
+## Step 2: Running Terraform and Ansible
+### Dashboard Tasks
 
 ### Commands
 ```bash
-docker login
-docker build -t <dockerhub-username>/<app-name>:v1 .
-docker push <dockerhub-username>/<app-name>:v1
+sudo docker ps -a
+sudo docker rm nginx-container-id
+sudo docker rmi nginx
+
+cd Documents
+mkdir terraform-nginx
+cd terraform-nginx
+nano main.tf
+
+terraform {
+ required_providers {
+  docker = {
+   source = "kreuzwerker/docker"
+   version = "~> 3.0"
+  }
+ }
+}
+
+provider "docker" {}
+
+resource "docker_container" "nginx" {
+ name = "nginx_container"
+ image = "nginx:latest"
+ 
+ ports {
+  internal = 80
+  external = 8080
+ }
+}
 ```
 
-## Step 3: [Deploy to Kubernetes]
-### Dashboard Task
-1. Open your Kubernetes dashboard.
-2. Select the target namespace.
-3. Watch workload and service health.
+## Step 3: Initialize Terraform and Create Playbook
+### Dashboard Tasks
 
 ### Commands
 ```bash
-kubectl create deployment <app-name> --image=<dockerhub-username>/<app-name>:v1
-kubectl expose deployment <app-name> --type=LoadBalancer --port=80 --target-port=80
-kubectl get pods
-kubectl get svc
+terraform init
+
+sudo terraform apply
+
+Open http://localhost:8080
+
+cd ..
+mkdir ansible
+cd ansible
+nano index.html
+
+<h1>DevOps Lab</h1>
+<p>This page is configured using Ansible</p>
+
+nano homepage.yml
+
+- name: Change nginx homepage
+  hosts: localhost
+  
+  tasks:
+  
+- name: Copy HTML into container
+  command: docker cp index.html nginx_container:/usr/share/nginx/html/index.html
+
+sudo anisble-playbook homepage.yml
+
+Visit http://localhost:8080
+
+sudo terraform destroy
 ```
 
-## Step 4: [Validation and Cleanup]
-### Dashboard Task
-1. Verify the app is reachable from browser/API client.
-2. Capture screenshots or notes in your dashboard.
+## Step 4: Create Alert Rule
+### Dashboard Tasks
+1. rate(prometheus_http_requests_total[1m])
+2. rate(nginx_http_requests_total[1m])
+3. Configure threshold
 
 ### Commands
 ```bash
-kubectl logs deployment/<app-name>
-kubectl delete service <app-name>
-kubectl delete deployment <app-name>
+sudo docker compose up -d
+
+for i in {1..1000}
+do
+curl http://localhost:9090
+done
+
+for i in {1..1000}
+do
+curl http://localhost
+done
 ```

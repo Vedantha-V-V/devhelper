@@ -1,54 +1,62 @@
-# Lab Template: Docker to Kubernetes Workflow
+# Lab 8: Kubernetes
 
-Use this template for new labs. Each step has two required parts:
-- Dashboard Task: UI actions on any web dashboard or portal.
-- Commands: terminal commands to execute.
-
-## Step 1: [Name Your Step]
-### Dashboard Task
-1. Open [dashboard-url-here].
-2. Navigate to [page-name].
-3. Confirm [thing-you-should-see].
+## Step 1: Install Kubernetes
+### Dashboard Tasks
 
 ### Commands
 ```bash
-# Add commands to run for Step 1
+sudo apt update
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+kubectl version --client
 ```
 
-## Step 2: [Build or Pull Image]
-### Dashboard Task
-1. Open Docker Desktop or Docker Hub.
-2. Verify repository [repo-name] exists.
+## Step 2: Install Minikube
+### Dashboard Tasks
 
 ### Commands
 ```bash
-docker login
-docker build -t <dockerhub-username>/<app-name>:v1 .
-docker push <dockerhub-username>/<app-name>:v1
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+minikube version
+
+sudo usermod -aG docker $USER
+newqrp docker
+minikube start --driver=docker
+
+minikube status
+kubectl get nodes
 ```
 
-## Step 3: [Deploy to Kubernetes]
-### Dashboard Task
-1. Open your Kubernetes dashboard.
-2. Select the target namespace.
-3. Watch workload and service health.
+## Step 3: Create Pod
+### Dashboard Tasks
 
 ### Commands
 ```bash
-kubectl create deployment <app-name> --image=<dockerhub-username>/<app-name>:v1
-kubectl expose deployment <app-name> --type=LoadBalancer --port=80 --target-port=80
-kubectl get pods
-kubectl get svc
+kubectl run my-pod --image=nginx --restart=Never
+kubectl get pod my-pod -o wide
 ```
 
-## Step 4: [Validation and Cleanup]
-### Dashboard Task
-1. Verify the app is reachable from browser/API client.
-2. Capture screenshots or notes in your dashboard.
+## Step 4: Expose your pod through NodePort Service
+### Dashboard Tasks
+1. Try to access nginx server through service IP address
 
 ### Commands
 ```bash
-kubectl logs deployment/<app-name>
-kubectl delete service <app-name>
-kubectl delete deployment <app-name>
+kubectl expose pod my-pod --type=NodePort --port=80 --name=my-service
+kubectl get services
+minikube service my-service --url
+```
+
+## Step 5: Delete Pod and Service
+### Dashboard Tasks
+
+### Commands
+```bash
+kubectl expose pod my-pod --type=NodePort --port=80 --name=my-service
+kubectl get services
+minikube service my-service --url
 ```
