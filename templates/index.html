@@ -3,34 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab Dashboard</title>
+    <title>DevHelper</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dashboard-page">
-    <div class="background-glow"></div>
-    <header class="topbar">
-        <h1>DevOps Notes</h1>
-    </header>
+    <div class="app-shell">
+        <header class="jenkins-header">
+            <div class="brand-block">
+                <div>
+                    <h1>DevHelper</h1>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="search-pill">Search</div>
+                <div class="user-pill">admin</div>
+            </div>
+        </header>
 
-    <main class="dashboard-grid">
-        {% if labs %}
-            {% for lab in labs %}
-                <a class="lab-card" href="{{ url_for('lab_detail', lab_id=lab.id) }}">
-                    <div class="chip">Lab {{ lab.id }}</div>
-                    <h2>{{ lab.title }}</h2>
-                    <p>{{ lab.preview }}</p>
-                    <span class="file-label">{{ lab.file_name }}</span>
-                </a>
-            {% endfor %}
-        {% else %}
-            <section class="empty-state">
-                <h2>No markdown files found</h2>
-                <p>Add files in the <code>lab/</code> folder to see them here.</p>
-            </section>
-        {% endif %}
-    </main>
+        <div class="workspace-shell">
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h2>Main</h2>
+                    <a class="sidebar-link active" href="{{ url_for('home') }}">Dashboard</a>
+                    <a class="sidebar-link" href="#jobs">Jobs</a>
+                    <a class="sidebar-link" href="#queue">Build Queue</a>
+                    <a class="sidebar-link" href="#status">System Status</a>
+                </div>
+                <div class="sidebar-section">
+                    <h2>Builds</h2>
+                    <div class="sidebar-stat">
+                        <span>Items</span>
+                        <strong>{{ labs|length }}</strong>
+                    </div>
+                    <div class="sidebar-stat">
+                        <span>Healthy</span>
+                        <strong>{% if labs %}OK{% else %}Empty{% endif %}</strong>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="dashboard-main">
+                <section class="panel hero-panel">
+                    <div>
+                        <p class="panel-kicker">Dashboard</p>
+                        <h2>All jobs</h2>
+                    </div>
+                    <!-- <p class="panel-copy">A clean Jenkins-like workspace for browsing the markdown labs in this project.</p> -->
+                </section>
+
+                <section class="panel" id="jobs">
+                    <div class="panel-heading">
+                        <h3>Jobs</h3>
+                        <span>{{ labs|length }} items</span>
+                    </div>
+
+                    {% if labs %}
+                        <div class="jobs-list">
+                            {% for lab in labs %}
+                                <a class="job-row" href="{{ url_for('lab_detail', lab_id=lab.id) }}">
+                                    <div class="job-status success">●</div>
+                                    <div class="job-main">
+                                        <div class="job-title-row">
+                                            <h4>{{ lab.title }}</h4>
+                                            <span class="job-id">Lab {{ lab.id }}</span>
+                                        </div>
+                                        <p>{{ lab.preview }}</p>
+                                    </div>
+                                    <span class="job-file">{{ lab.file_name }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <h3>No markdown files found</h3>
+                            <p>Add files in the <code>lab/</code> folder to populate the dashboard.</p>
+                        </div>
+                    {% endif %}
+                </section>
+            </main>
+        </div>
+    </div>
 </body>
 </html>
