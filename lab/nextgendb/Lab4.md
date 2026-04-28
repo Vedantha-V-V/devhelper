@@ -1,6 +1,5 @@
 # Lab-4: Neo4j
 
-
 ## Step 1: Create data
 
 ### Commands

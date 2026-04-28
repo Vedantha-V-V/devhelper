@@ -7,7 +7,6 @@
 curl -X PUT http://localhost:5984/studentdb
 ```
 
-
 ## Step 2: Insert documents
 
 ### Commands

@@ -54,9 +54,7 @@ HSET product:1 Price 950
 ZADD price_index 950 1
 ```
 
-
 ## Step 7: Delete a Product
-
 
 ### Commands
 ```bash
