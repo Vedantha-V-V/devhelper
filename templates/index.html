@@ -28,9 +28,8 @@
                 <div class="sidebar-section">
                     <h2>Main</h2>
                     <a class="sidebar-link active" href="{{ url_for('home') }}">Dashboard</a>
-                    <a class="sidebar-link" href="#jobs">Jobs</a>
-                    <a class="sidebar-link" href="#queue">Build Queue</a>
-                    <a class="sidebar-link" href="#status">System Status</a>
+                    <a class="sidebar-link" href="{{ url_for('course_home', course='docker') }}">Docker</a>
+                    <a class="sidebar-link" href="{{ url_for('course_home', course='nextgendb') }}">NextGen DB</a>
                 </div>
                 <div class="sidebar-section">
                     <h2>Builds</h2>
@@ -49,26 +48,26 @@
                 <section class="panel hero-panel">
                     <div>
                         <p class="panel-kicker">Dashboard</p>
-                        <h2>All jobs</h2>
+                        <h2>All labs</h2>
                     </div>
                     <!-- <p class="panel-copy">A clean Jenkins-like workspace for browsing the markdown labs in this project.</p> -->
                 </section>
 
                 <section class="panel" id="jobs">
                     <div class="panel-heading">
-                        <h3>Jobs</h3>
+                        <h3>Labs</h3>
                         <span>{{ labs|length }} items</span>
                     </div>
 
                     {% if labs %}
                         <div class="jobs-list">
                             {% for lab in labs %}
-                                <a class="job-row" href="{{ url_for('lab_detail', lab_id=lab.id) }}">
+                                <a class="job-row" href="{{ url_for('lab_detail', course=lab.course, lab_id=lab.id) }}">
                                     <div class="job-status success">●</div>
                                     <div class="job-main">
                                         <div class="job-title-row">
                                             <h4>{{ lab.title }}</h4>
-                                            <span class="job-id">Lab {{ lab.id }}</span>
+                                            <span class="job-id">{{ lab.course_label }} / Lab {{ lab.id }}</span>
                                         </div>
                                         <p>{{ lab.preview }}</p>
                                     </div>

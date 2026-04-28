@@ -15,12 +15,12 @@
         <header class="jenkins-header">
             <div class="brand-block">
                 <div>
-                    <p class="eyebrow">Job details</p>
+                    <p class="eyebrow">Lab details</p>
                     <h1>{{ lab.title }}</h1>
                 </div>
             </div>
             <div class="header-actions">
-                <a class="search-pill back-pill" href="{{ url_for('home') }}">Back to dashboard</a>
+                <a class="search-pill back-pill" href="{{ url_for('course_home', course=lab.course) }}">Back to {{ lab.course_label }}</a>
                 <div class="user-pill">admin</div>
             </div>
         </header>
@@ -28,15 +28,19 @@
         <div class="workspace-shell detail-shell">
             <aside class="sidebar">
                 <div class="sidebar-section">
-                    <h2>Job</h2>
-                    <a class="sidebar-link active" href="{{ url_for('lab_detail', lab_id=lab.id) }}">Overview</a>
-                    <a class="sidebar-link" href="{{ url_for('home') }}">All labs</a>
+                    <h2>Lab</h2>
+                    <a class="sidebar-link active" href="{{ url_for('lab_detail', course=lab.course, lab_id=lab.id) }}">Overview</a>
+                    <a class="sidebar-link" href="{{ url_for('course_home', course=lab.course) }}">All {{ lab.course_label }} labs</a>
                 </div>
                 <div class="sidebar-section">
                     <h2>Source</h2>
                     <div class="sidebar-stat">
                         <span>File</span>
                         <strong>{{ lab.file_name }}</strong>
+                    </div>
+                    <div class="sidebar-stat">
+                        <span>Course</span>
+                        <strong>{{ lab.course_label }}</strong>
                     </div>
                     <div class="sidebar-stat">
                         <span>Type</span>
@@ -52,7 +56,7 @@
                             <p class="panel-kicker">Console output</p>
                             <h2>{{ lab.title }}</h2>
                         </div>
-                        <span class="job-file">{{ lab.file_name }}</span>
+                        <span class="job-file">{{ lab.course_label }} / {{ lab.file_name }}</span>
                     </div>
                     <article class="markdown-body">
                         {{ lab.html | safe }}

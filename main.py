@@ -11,6 +11,10 @@ app = Flask(__name__)
 BASE_DIR = Path(__file__).resolve().parent
 LAB_DIR = BASE_DIR / "lab"
 LAB_FILE_PATTERN = re.compile(r"^Lab(\d+)\.md$", re.IGNORECASE)
+COURSE_ALIASES = {
+    "docker": "docker",
+    "nextgendb": "nextgendb"
+}
 
 
 def extract_title(markdown_text: str, fallback: str) -> str:
@@ -30,6 +34,16 @@ def extract_preview(markdown_text: str) -> str:
             continue
         return stripped[:180]
     return "No content added yet."
+
+
+def normalize_course(course: str) -> str | None:
+    return COURSE_ALIASES.get(course.lower())
+
+
+def display_course_name(course: str) -> str:
+    if course == "nextgendb":
+        return "NextGen DB"
+    return course.capitalize()
 
 
 def render_markdown(markdown_text: str) -> str:
@@ -57,8 +71,9 @@ def load_labs() -> list[dict]:
     if not LAB_DIR.exists():
         return labs
 
-    for path in sorted(LAB_DIR.glob("*.md")):
+    for path in sorted(LAB_DIR.glob("*/*.md")):
         raw = path.read_text(encoding="utf-8")
+        course_slug = path.parent.name
         match = LAB_FILE_PATTERN.match(path.name)
 
         if match:
@@ -71,6 +86,8 @@ def load_labs() -> list[dict]:
         labs.append(
             {
                 "id": lab_id,
+                "course": course_slug,
+                "course_label": display_course_name(course_slug),
                 "file_name": path.name,
                 "title": extract_title(raw, default_title),
                 "preview": extract_preview(raw),
@@ -87,8 +104,34 @@ def home():
     return render_template("index.html", labs=load_labs())
 
 
+@app.route("/courses/<course>")
+def course_home(course: str):
+    normalized_course = normalize_course(course)
+    if normalized_course is None:
+        abort(404)
+
+    labs = [lab for lab in load_labs() if lab["course"] == normalized_course]
+    return render_template("index.html", labs=labs)
+
+
+@app.route("/courses/<course>/labs/<lab_id>")
+def lab_detail(course: str, lab_id: str):
+    normalized_course = normalize_course(course)
+    if normalized_course is None:
+        abort(404)
+
+    labs = load_labs()
+    selected = next(
+        (lab for lab in labs if lab["course"] == normalized_course and lab["id"] == lab_id),
+        None,
+    )
+    if selected is None:
+        abort(404)
+    return render_template("article.html", lab=selected)
+
+
 @app.route("/labs/<lab_id>")
-def lab_detail(lab_id: str):
+def legacy_lab_detail(lab_id: str):
     labs = load_labs()
     selected = next((lab for lab in labs if lab["id"] == lab_id), None)
     if selected is None:
