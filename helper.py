@@ -7,8 +7,7 @@ from pathlib import Path
 STEP_PATTERN = re.compile(r"^##\s*Step\s+(\d+)\s*[:\-]?\s*(.*)$", re.IGNORECASE)
 COURSE_ALIASES = {
 	"docker": "docker",
-	"nextgendb": "nextgen-db",
-	"nextgen-db": "nextgen-db",
+	"nextgendb": "nextgendb",
 }
 
 
