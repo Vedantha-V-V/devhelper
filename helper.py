@@ -37,11 +37,22 @@ def parse_steps(markdown_text: str) -> dict[int, str]:
 
 
 def get_course_lab_file(course: str, lab_number: int) -> Path:
-	base_dir = Path(__file__).resolve().parent
 	normalized_course = COURSE_ALIASES.get(course.lower())
 	if normalized_course is None:
 		raise SystemExit(f"Unknown course: {course}. Available courses: {', '.join(sorted(COURSE_ALIASES))}")
-	return base_dir / "lab" / normalized_course / f"Lab{lab_number}.md"
+	
+	possible_dirs = [
+		Path(__file__).resolve().parent / "lab",  
+		Path("/app/lab"), 
+		Path.cwd() / "lab", 
+	]
+	
+	for base_lab_dir in possible_dirs:
+		lab_path = base_lab_dir / normalized_course / f"Lab{lab_number}.md"
+		if lab_path.exists():
+			return lab_path
+	
+	return possible_dirs[0] / normalized_course / f"Lab{lab_number}.md"
 
 
 def main() -> None:
