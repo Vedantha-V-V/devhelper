@@ -6,10 +6,10 @@
 ```bash
 docker run --name redis-server -p 6379:6379 -d redis
 docker exec -it redis-server redis-cli
-HSET product:1 "Name":"Smartphone","Category":"Electronics","Price":800
-HSET product:2 "Name":"Headphones","Category":"Electronics","Price":600
-HSET product:3 "Name":"Shoes","Category":"Fashion","Price":1200
-HSET product:4 "Name":"Watch","Category":"Accessories","Price":700
+HSET product:1 Name "Smartphone" Category "Electronics" Price 800
+HSET product:2 Name "Headphones" Category "Electronics" Price 600
+HSET product:3 Name "Shoes" Category "Fashion" Price:1200
+HSET product:4 Name "Watch" Category "Accessories" Price 700
 
 SADD category:Electronics 101 102
 SADD category:Fashion 103
