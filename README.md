@@ -22,5 +22,5 @@ docker run -d --name neo4j-container -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo
 ## Redis
 
 ```bash
-docker dun --name redis-server -p 6379:6379 -d redis
+docker run --name redis-server -p 6379:6379 -d redis
 ```
